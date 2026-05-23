@@ -25,10 +25,6 @@ An interactive Student Performance Dashboard built using Python and Streamlit.
 
 ```bash
 streamlit run app.py
-
-
-This README helps your GitHub look professional.
-
 ---
 
 # PHASE 2 — CREATE GITHUB ACCOUNT
