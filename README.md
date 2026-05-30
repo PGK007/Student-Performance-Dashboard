@@ -20,3 +20,7 @@ An interactive Student Performance Dashboard built using Python and Streamlit.
 - Pandas
 - Plotly
 - Streamlit
+- Matplotlib
+- Numpy
+- Scikit-learn
+- Joblib
