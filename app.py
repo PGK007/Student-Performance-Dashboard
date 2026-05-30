@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import random
+import joblib
 
 # =====================================================
 # PAGE CONFIG
@@ -147,6 +148,15 @@ df["Attendance"] = [
 ]
 
 # =====================================================
+# LOAD ML MODEL
+# =====================================================
+
+try:
+    model = joblib.load("model.pkl")
+except:
+    model = None
+
+# =====================================================
 # SIDEBAR MENU
 # =====================================================
 
@@ -158,7 +168,8 @@ menu = st.sidebar.radio(
         "Graphs",
         "Leaderboard",
         "Pass/Fail",
-        "Attendance"
+        "Attendance",
+        "ML Prediction"
     ]
 )
 
@@ -443,6 +454,88 @@ elif menu == "Attendance":
     st.progress(
         int(attendance)
     )
+
+# =====================================================
+# ML PREDICTION
+# =====================================================
+
+elif menu == "ML Prediction":
+
+    st.header("🤖 Student Performance Prediction")
+
+    if model is None:
+
+        st.error(
+            "Model file not found. Run train_model.py first."
+        )
+
+    else:
+
+        attendance = st.slider(
+            "Attendance %",
+            0,
+            100,
+            80
+        )
+
+        study_hours = st.slider(
+            "Study Hours Per Day",
+            0,
+            10,
+            4
+        )
+
+        assignments = st.slider(
+            "Assignment Score",
+            0,
+            100,
+            75
+        )
+
+        previous_marks = st.slider(
+            "Previous Marks",
+            0,
+            100,
+            70
+        )
+
+        if st.button("Predict Final Marks"):
+
+            prediction = model.predict(
+                [[
+                    attendance,
+                    study_hours,
+                    assignments,
+                    previous_marks
+                ]]
+            )
+
+            predicted_marks = round(
+                prediction[0],
+                2
+            )
+
+            st.success(
+                f"Predicted Final Marks: {predicted_marks}"
+            )
+
+            if predicted_marks >= 90:
+
+                st.success("Expected Grade: A+")
+
+            elif predicted_marks >= 75:
+
+                st.info("Expected Grade: A")
+
+            elif predicted_marks >= 60:
+
+                st.warning("Expected Grade: B")
+
+            else:
+
+                st.error(
+                    "Expected Grade: Needs Improvement"
+                )
 
 # =====================================================
 # DOWNLOAD BUTTON
